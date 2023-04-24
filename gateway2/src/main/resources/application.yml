@@ -20,3 +20,10 @@ spring:
             - Path=/maketea/{teaID}
           filters:
             - SetPath=/teas/maketea/{teaID}
+
+        - id: milk
+          uri: ${MILK}
+          predicates:
+            - Path=/milk
+          filters:
+            - SetPath=/getmilk
