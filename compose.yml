@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+    mongo_db_2.0.0:
+        image: "mongo"
+        container_name: mongo_db_2.0.0
+        restart: always
+        ports:
+            - 27017:27017
+        networks:
+            - tea-network
+            
+    teas_2.0.0:
+        build: ./teas2
+        image: teapot2_teas_2.0.0
+        container_name: teas_2.0.0
+        environment:
+            - MONGODB_HOST=mongo_db_2.0.0
+            - DATABASE_NAME=teas2-db
+#        restart: always
+        ports:
+            - 8184:8184
+        depends_on:
+            - mongo_db_2.0.0
+#            - discovery-service_10-3-23
+        networks:
+            - tea-network
+            
+    milk:
+        build: ./milk
+        container_name: milk
+        image: teapot2_milk
+        ports:
+            - 8183:8183
+        networks:
+            - tea-network
+            
+    gateway_3.1.1:
+        build: ./gateway2
+        image: teapot2_gateway_3.1.1
+        container_name: gateway_3.1.1
+        environment:
+            - TEAS=http://host.docker.internal:8184
+            - MILK=http://host.docker.internal:8183
+#            - client-secret=mWOalfkIT2OqCuC78EWe5HwRApqqpEH0
+#            - client-secret=49re8jq7d3WeYRx7BVHwoPSJFRxyhcKp
+        # tried: host.docker.internal, keycloak-server, localhost
+#            - keycloak.server-url=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
+#        depends_on:
+#            - discovery-service_10-3-23
+#            - keycloak-server_10-3-23
+        ports:
+            - 8180:8180
+        networks:
+            - tea-network
+#        restart: always
+
+networks:
+  tea-network:
+    driver: bridge
