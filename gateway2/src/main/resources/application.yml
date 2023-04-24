@@ -1,0 +1,22 @@
+server:
+  port: 8180
+
+spring:
+  application:
+    name: gateway2
+  cloud:
+    gateway:
+      routes:
+        - id: listTeas
+          uri: ${TEAS}
+          predicates:
+            - Path=/listteas
+          filters:
+            - SetPath=/teas/getall
+
+        - id: makeTea
+          uri: ${TEAS}
+          predicates:
+            - Path=/maketea/{teaID}
+          filters:
+            - SetPath=/teas/maketea/{teaID}
