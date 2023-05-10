@@ -7,6 +7,13 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: helloTea
+          uri: ${TEAS}
+          predicates:
+            - Path=/hellotea/{name}
+          filters:
+            - SetPath=/teas/hello/{name}
+
         - id: listTeas
           uri: ${TEAS}
           predicates:
@@ -27,3 +34,9 @@ spring:
             - Path=/milk
           filters:
             - SetPath=/getmilk
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK}/realms/teapot

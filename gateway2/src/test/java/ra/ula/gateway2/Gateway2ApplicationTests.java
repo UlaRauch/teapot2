@@ -9,5 +9,4 @@ class Gateway2ApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
