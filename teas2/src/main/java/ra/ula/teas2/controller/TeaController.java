@@ -20,6 +20,7 @@ public class TeaController {
 
     @GetMapping("/hello/{name}")
     public ResponseEntity<String> hello(@PathVariable("name") String name) {
+        System.out.println("Hello " + name);
         return new ResponseEntity<>("Hello " + name, HttpStatus.OK);
     }
 
