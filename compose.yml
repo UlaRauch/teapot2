@@ -1,5 +1,31 @@
 version: "3.8"
 services:
+    keycloak-server_2.0.0:
+        container_name: keycloak-server_2.0.0
+# use keycloak 20.0
+        image: quay.io/keycloak/keycloak
+        environment:
+            # create initial username and password
+#            KEYCLOAK_USER: admin
+#            KEYCLOAK_PASSWORD: admin
+            KEYCLOAK_ADMIN: admin
+            KEYCLOAK_ADMIN_PASSWORD: admin
+            PROXY_ADDRESS_FORWARDING: "true"
+            KEYCLOAK_FRONTEND_URL: http://localhost:10001/auth
+#            KEYCLOAK_IMPORT: /tmp/realm-export.json#        volumes:
+#            - ./realm-export.json:/tmp/realm-export.json
+# new import commands einbauen!
+        command:
+        - start-dev 
+        - --import-realm
+        volumes:
+            - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm.json
+#            - ./realm-export.json:/tmp/realm-export.json
+        ports:
+            - 10001:8080
+        networks:
+            - tea-network
+
     mongo_db_2.0.0:
         image: "mongo"
         container_name: mongo_db_2.0.0
@@ -10,7 +36,7 @@ services:
             - tea-network
             
     teas_2.0.0:
-        build: ./teas2
+        build: ./teas
         image: teapot2_teas_2.0.0
         container_name: teas_2.0.0
         environment:
@@ -21,18 +47,17 @@ services:
             - 8184:8184
         depends_on:
             - mongo_db_2.0.0
-#            - discovery-service_10-3-23
         networks:
             - tea-network
             
-    milk:
-        build: ./milk
-        container_name: milk
-        image: teapot2_milk
-        ports:
-            - 8183:8183
-        networks:
-            - tea-network
+#    milk:
+#        build: ./milk
+#        container_name: milk
+#        image: teapot2_milk
+#        ports:
+#            - 8183:8183
+#        networks:
+#            - tea-network
             
     gateway_3.1.1:
         build: ./gateway2

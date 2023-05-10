@@ -26,5 +26,3 @@
 				- /milk				routes to ${MILK}/getmilk
 	
 	- realm: teapot
-	
-weiter: docker images builden und pullen für gateway + teas as RS
