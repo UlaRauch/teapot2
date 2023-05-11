@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 //name of the collection in mongoDB (name of the db can be found in properties
-@Document(collection = "teas")
+@Document(collection = "teas_for_ba2")
 public class Tea {
 
     @Id
