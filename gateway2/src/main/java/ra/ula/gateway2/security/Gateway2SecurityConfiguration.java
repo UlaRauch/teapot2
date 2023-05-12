@@ -26,9 +26,9 @@ public class Gateway2SecurityConfiguration {
             .and()
                 .logout()
                 .logoutSuccessHandler(handler);
-
         return http.build();
     }
+
     @Bean
     public ServerLogoutSuccessHandler keycloakLogoutSuccessHandler(ReactiveClientRegistrationRepository repository) {
         OidcClientInitiatedServerLogoutSuccessHandler oidcClientInitiatedServerLogoutSuccessHandler = new OidcClientInitiatedServerLogoutSuccessHandler(repository);
