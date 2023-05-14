@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-    keycloak-server_2.0.0:
-        container_name: keycloak-server_2.0.0
+    keycloak-server_2:
+        container_name: keycloak-server_2
 # use keycloak 20.0
         image: quay.io/keycloak/keycloak
         environment:
@@ -23,32 +23,32 @@ services:
 #            - ./realm-export.json:/tmp/realm-export.json
         ports:
             - 10001:8080
-        networks:
-            - tea-network
+#        networks:
+#            - tea-network
 
-    mongo_db_2.0.0:
+    mongo_db_2:
         image: "mongo"
-        container_name: mongo_db_2.0.0
+        container_name: mongo_db_2
         restart: always
         ports:
             - 27017:27017
-        networks:
-            - tea-network
+#        networks:
+#            - tea-network
             
-    teas_2.0.0:
+    teas_rs:
         build: ./teas
-        image: teapot2_teas_2.0.0
-        container_name: teas_2.0.0
+        image: teapot2_teas_rs
+        container_name: teas_rs
         environment:
-            - MONGODB_HOST=mongo_db_2.0.0
+            - MONGODB_HOST=mongo_db_2
             - DATABASE_NAME=teas2-db
 #        restart: always
         ports:
             - 8184:8184
         depends_on:
-            - mongo_db_2.0.0
-        networks:
-            - tea-network
+            - mongo_db_2
+#        networks:
+#            - tea-network
             
 #    milk:
 #        build: ./milk
@@ -59,26 +59,25 @@ services:
 #        networks:
 #            - tea-network
             
-    gateway_3.1.1:
+    gateway_rs:
         build: ./gateway2
-        image: teapot2_gateway_3.1.1
-        container_name: gateway_3.1.1
+        image: teapot2_gateway_rs
+        container_name: gateway_rs
         environment:
             - TEAS=http://host.docker.internal:8184
             - MILK=http://host.docker.internal:8183
-#            - client-secret=mWOalfkIT2OqCuC78EWe5HwRApqqpEH0
-#            - client-secret=49re8jq7d3WeYRx7BVHwoPSJFRxyhcKp
+#            - CLIENT_SECRET=49re8jq7d3WeYRx7BVHwoPSJFRxyhcKp
         # tried: host.docker.internal, keycloak-server, localhost
-#            - keycloak.server-url=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
+            - KEYCLOAK=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
 #        depends_on:
 #            - discovery-service_10-3-23
-#            - keycloak-server_10-3-23
+            - keycloak-server_2
         ports:
             - 8180:8180
-        networks:
-            - tea-network
+#        networks:
+#            - tea-network
 #        restart: always
 
-networks:
-  tea-network:
-    driver: bridge
+#networks:
+#  tea-network:
+#    driver: bridge
