@@ -328,3 +328,29 @@ JSESSIONID=5E360ECFF6076DB9317C8E97EC596748; SESSION=bc95ecf1-d0b5-4962-a708-4af
 
 
 JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD; SESSION=2c358545-2a48-4714-a804-a435d726f518
+
+jm -> gw -> rs
+client -> rs -> rs
+
+dumb -> client -> rs 
+
+ohne authentication prozess:
+token -> rs (check) - token -> rs (check)
+cookie -> client (check) - token -> rs (check)
+
+mit authN:
+
+auth code flow -> rs
+
+<- send code & cookie -> client -> rs
+
+aufwand, cookie zu prüfen und dann den token auszugraben vs aufwand, token zu checken und weiterzuleiten
+---
+
+keycloak	10001
+mongo		27017
+gateway_0		8080
+gateway_rs		8180
+gateway_client	8181
+teas_0			8084
+teas_rs			8184
