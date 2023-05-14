@@ -13,7 +13,8 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 public class Gateway2SecurityConfiguration {
     @Bean
     public SecurityWebFilterChain springSecurityWebFilterChain(ServerHttpSecurity http, ServerLogoutSuccessHandler handler) {
-        http
+        http.cors()
+            .and()
                 .authorizeExchange()
                 .pathMatchers("/hellogateway", "/hellotea/noauth")
                 .permitAll()
