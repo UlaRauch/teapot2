@@ -43,13 +43,13 @@ spring:
       client:
         provider:
           keycloak-provider:
-            jwk-set-uri: ${keycloak.server-url}/realms/teapot/protocol/openid-connect/certs
-            issuer-uri: ${keycloak.server-url}/realms/teapot
+            jwk-set-uri: ${KEYCLOAK}/realms/teapot/protocol/openid-connect/certs
+            issuer-uri: ${KEYCLOAK}/realms/teapot
         registration:
           keycloak-gateway-client:
             provider: keycloak-provider
             scope: openid
             client-id: teapot-gateway
-            client-secret: ${client-secret}
+            client-secret: ${CLIENT_SECRET}
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:8080/login/oauth2/code/{registrationId}'
