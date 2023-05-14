@@ -1,0 +1,330 @@
+Securing the teapot
+
+Fertig basteln:
+* so, dass das aktuelle funktioniert: cors-problem, client-frage
+* keycloak
+* Frontend netter machen gleich am anfang, mit begrenzter zeit, aber für die motivation
+* IoT? wäre nice. was könnte ich machen? 
+..
+?
+
+Theoretisch beschreiben:
+* Microservices
+* Gateway Pattern? -> floren
+* OAuth2 -> Mehr Diagramme für Flows etc. zeichnen
+* OIDC
+
+Technology:
+Prototyp Architektur Beschreibung (Architektur, Sequenzdiagramm für Authentication/Authorization-Ablauf zeichnen)
+
+Technologie:
+* Spring Boot
+* Spring Cloud Gateway
+* (Netflix Eureka Discovery Service)
+* Spring Security
+* Keycloak (auch die anderen arbeiten zitieren, wo es verwendet wurde, siehe BA1) - Kriterien für die Auswahl: Free, open source, works with spring boot
+
+
+
+Optional:
+* weitere ID provider bzw. was ist da genau die systematik?
+
+* Load testing: Welche Technologie dafür verwendet?
+* was sind akzeptable werte? mit was kann ich das vergleichen? -> Ergebnis und Entscheidungskriterien dokumentieren (auch bei Floren und anderen nachschaun)
+
+
+
+Aktuelle Probleme mit Implementierung, unbedingt zu lösen:
+gateway sollte spa redirecten (cors)
+hilft mir das?
+https://stackoverflow.com/questions/71251098/logout-via-spring-cloud-gateway-does-not-work-with-spring-security-oidc-and-key
+SPA soll form Post schicken statt Ajax post?
+Wie macht der den login?
+
+Floren: edge level gateway pattern! SPA schickt jwt mit request zum gateway mit, gateway macht validation beim auth-service
+Evt. auch das Problem beschreiben, was passiert, wenn SPA und Gateway als Client registriert sind?
+
+MVP:
+* Client/Cors-Frage lösen -> Bis hierher beschreiben, was ich gemacht hab
+
+Besser:
+* Frontend ansehnlicher (bissl bunter, viel mehr brauchts eigentlich eh nicht)
+* Load testing
+* CRUD vervollständigen
+
+Super:
+* Noch ein Service dazu
+* Teabags-Tracking
+---
+Schlachtplan:
+wie kann ich das am schnellsten testen ohne das bestehende docker compose projekt zu überschreiben?
+pipeline?
+Das ist sehr wichtig, weil es mich viel zeit kostet, alles neu zu starten, settings zu ändern und immer wieder eine fehlerquelle ist
+-> neuer name
+-> .env?
+-> frontend als container (muss das im selben netzwerk laufen?) -> https://stackify.com/docker-build-a-beginners-guide-to-building-docker-images/
+
+
+1. Gateway als Resource Server
+	hat einmal nicht funktioniert, aber nocheinmal in ruhe probieren, lohnt sich
+	- branch
+	- oauth2 client entfernt aus: properties, security-config, pom-dependencies
+	
+	token muss an gateway geschickt werden, gateway validiert und schickt weiter an teaservice?
+	ODER gateway beantragt einen neuen token und fragt beim teaservice
+	so gesehen ist es total legitim, wenn das gateway separat eingeloggt ist? nur idealerweise mit anderem user? bzw. kann das gateway sich selber einloggen? angemeldet ist es schon.
+	Gateway fragt on behalf of the user beim resource server nach, ist demnach ein client
+	- spa nicht mit oauth sichern, nur weiterleiten?
+	- gateway darf nur auf anfragen von bestimmten hosts reagieren?
+	- resource server reagiert derzeit auf alle anfragen
+	--
+	laut Florén gibts keine weitere tokenvalidation hinter dem gateway, d.h. gateway ist resource server, services dahinter kommunizieren nicht außerhalb.
+	---
+	was passiert bei spa mit auth code? spa ist client, browser noch dazu. anfrage über browser (front channel) ohne secret -> code zurück an browser (front channel), browser gibt code an spa-server(front channel, weils vom browser kommt?), die dann den code einlöst (back channel und ohne secret). Dabei gehts nur um zugriff auf teile der spa. Für request an API kann der access token mitgeschickt werden, den die spa jetzt gekriegt hat? wo wird der aufbewahrt? muss eigentlich am server sein und nicht im localstorage oder cookie vom user. spaß ist client, der on behalf of the user auf api zugreift und mit access token beweist, dass es dazu autorisiert ist. 
+	
+	Kanns sein, dass hier eigentlich nur authentication gemacht wird aber keine davon separierte Authorization abgesehen vom zugriff auf die userdaten über den id token? irgendwas wird ja in localstorage gespeichert und von dort abgerufen... -> wär wieder schön, das ganze einzusparen und erst ab gateway zu arbeiten...
+	
+	für andere, wie gateway, die nur back channel nutzen und passwort speichern können, ist code flow trotzdem sicherer...
+		-> gateway schickt request mit secret? + kriegt code, geht dann den code bei einem anderen endpoint einlösen.
+	
+	
+	Gute erklärungen, aber nicht ganz die Antwort: https://www.thearmchaircritic.org/mansplainings/best-practices-for-oidc-authentication-in-spas
+	
+	Neuer Artikel: Server-to-server (gateway to teaservice?)
+---
+	Normalfall: SPA = Client, API am Backend = Resource Server
+	Spezialfall: Dritte Komponente: Gateway -> fungiert als Client für Service dahinter aber stellt eigentlich die API für die SPA dar, also Resource Server
+	Kommunikation zwischen Gateway und anderen Services -> im Buch nachlesen!
+	
+	
+Lösung für BA2: Frontend einfach weglassen? machen ja viele andere auch so. trotzdem die fragen noch lösen. cors-weiterleitung zum login wär wahrscheinlich die sauberste lösung. + schaun, 
+	
+OIDC mit Google, Github etc. als zweite Option
+
+Roles implementieren...
+Entscheidet Gateway schon auf Basis der Roles, was wohin weitergeleitet wird? Das heißt, Gateway kriegt Logik...
+Hat Floren Roles?
+	
++ csrf
+mit oder ohne disable? was ist default?
+
+Für 15.:
+- wie wird usability/implementierfreundlichkeit gemessen?
+- security test automatisch möglich?
+	Floren macht das mit Postman, inspiriert durch Nehme et al. -> falscher Access Token etc. ist auch schon ein Test...
+	Postman Screenshots, Beschreibung des Ablaufs und der Erwarteten Responses
+- load testing mit JMeter:
+	könnte komplizierter werden. Liefert JMeter die schönen Grafiken?
+Achtung, keine Masterarbeit machen!
+- keycloak scalen?
+
+Fragen für BA:
+what is delegated access? (oauth2 is a delegated access protocol)
+why is oauth2 not authentication?
+
+Leon Fragen: OK, wenn ich das frontend weglasse? -> kanns ja dann immer noch einbaun.
+Gibts immer noch Must/Should/Could?
+
+Noch recherchieren:
+Wie schwierig ist JMeter?
+Wie misst man implementierfreundlichkeit?
+YT-Video über OAuth2 hacken anschaun -> vielleicht kann ich davon was ausprobieren und beschreiben?
+
+Ändert RabbitMQ noch irgendwas an der ganzen geschichte? - wenn das auch implementiert wird, auch beschreiben! eine halbe bis ganze seite pro service
+Generell einfach sagen, dass das MS-System vereinfacht wurde...
+
+
+Literaturliste:
+- Floren
+- Nehme et al. ...
+- siriwardena
+
+-----------
+
+api gateway ist backend for frontend für nur eine art von client?
+https://michaeldfti.medium.com/diferen%C3%A7a-entre-api-gateway-e-backends-for-frontends-cb443821ff6d
+
+
+https://octoperf.com/blog/2018/04/23/jmeter-rest-api-testing/#login-api-specs
+
+loadtesting nur für keycloak vs. irgendwas anderes: brauchts da überhaupt meine microservices? wenn ja, dann fliegt das raus
+
+-> spricht eher für architekturunterschiede
+
+gateway als client/resource server beides legitim siehe hier:
+https://www.baeldung.com/spring-cloud-gateway-oauth2
+sequenzdiagramme auch als vorbild nützlich
+
+CORS: @CrossOrigin hilfreich? Siehe Chatterjee et al....
+
+Ziel ist nicht, ein sicheres system zu entwickeln, daher kein https nötig
+postman ist auch testing
+---
+
+weiter:
+
+branch für noauth
+branch für gateway als client
+branch für gateway als resource server - d.h. frontend als client und gateway leitet token weiter. was ist da mit dem client-secret in der resource-server config und opaque token?
+
+nach obenstehendem baeldung-tutorial.
+github noch auffindbar?
+beispiel für angular app (und resource server) hier:
+https://github.com/Baeldung/spring-security-oauth/blob/master/oauth-jwt/oauth-ui-authorization-code-angular-jwt/src/main/resources/src/app/app.module.ts
+
+Wenns nicht funktioniert, mtls anschaun.
+
+---
+
+kann gateway selber einen neuen access token anfordern, ohne user consent?
+
+Sehr hilfreich:
+(gedanken, perspektiven, die man übernehmen kann) + definitionen:
+https://www.talentica.com/blogs/key-authentication-security-patterns-in-microservice-architecture/
+
+
+frontend als client:
+user sagt frontend, dass er sich einloggen will
+frontend schickt user direkt zum auth service
+
+
+Eigentlich sollte es möglich sein, den JWT Token zu validieren ohne kontakt zum Auth server? weil er eben self-sufficient ist und nicht nur ein reference token?
+muss ich das doch erst selber implementieren?
+wenn ja, welchen unterschied macht das für den performance-vergleich?
+ausprobieren: keycloak ausschalten, nachdem die keys geholt wurden (expiration im aug behalten)
+
+laut dem artikel mtls ODER id-token zwischen backend services
+
+evt. mit wireshark ausprobieren...
+
+
+mtls evt. weglassen? vergleich mit trust between services dann aber unsinnig?
+also wenn, dann mit rs-rs (gateway als rs kann anscheinend requests access tokens weiterleiten aber nicht selbst einen neuen beantragen? wenn ein rs kein gateway ist, geht das vermutlich nicht. also ist die frage nach mtls erst dahinter relevant, das lass ich aber aus)
+
+performance: backend-service auf jeden fall nicht als Resource Server, sonst wird zwangsläufig mehr gerechnet. entweder mtls vs oauth als thema, oder garnix.
+es gibt also genau einen client und einen rs und dieses paar liegt entweder weiter vorne oder weiter hinten. diese überlegung darf so in der BA drinstehen!
+
+kann am schluss nocheinmal erwähnt werden
+--
+https://stackoverflow.com/questions/70113869/what-is-the-oauth-flow-to-generate-access-token-without-consent-from-resource-ow
+
+---
+
+jmeter schickt anfrage ans gateway - gateway ist client - kein browser ist beteiligt
+wie hab ich das mit postman gemacht? hat das funktioniert?
+
+was passiert da überhaupt? gateway-client kriegt access token und schickt den weiter
+
+wie krieg ich das gateway dazu, sich den access token zu holen und wie approve ich als user? vielleicht hilft das script unten doch irgendwie.
+
+login prozess mit jmeter nur einmal?
+welche art von client ist jmeter?
+nocheinmal googeln und anleitungen anschaun.
+
+das ist nur auth code flow. darum gehts eigentlich nicht. aber vielleicht kann ich was davon abschaun und selber ein script machen, das den login macht...
+https://medium.com/version-1/performance-testing-of-oauth-2-0-authorization-code-secured-apis-using-jmeter-7a9d711716a1
+
+
+das gateway merkt, ob der client, von dem die anfrage kommt, der ist, der authorisiert wurde! Wie mach ich das mit jmeter?
+
+spring sends a session cookie! copy session cookie into request!
+
+5E360ECFF6076DB9317C8E97EC596748
+
+AUTH_SESSION_ID_LEGACY=3bbc4c7a-de86-4835-8d14-5450516bf587
+
+1. browser an gateway -> hello cookie
+2. gateway an browser -> log dich dort ein: /oauth2/authorization/keycloak-gateway-client
+3. browser an gateway: ok, /oauth2/authorization/keycloak-gateway-client
+	 Cookie: JSESSIONID, SESSION (wann wurden die gesetzt und woher weiß der browser, dass er die jetzt schicken soll?)
+4. gateway an browser, ok, geh zum keycloak-server und frag da nach (client-id, response-type, state, redirekt-uri
+5. browser an keycloak: das gateway schickt mich, cookie: AUTH_SESSION_ID_LEGACY (wieder, wann wurde das gesetzt und woher weiß der browser, dass er das schicken soll?
+6. keycloak an browser: set-cookie auth_session_id, auth_session_id_legacy, KC_RESTART
+	login-formular (geht eine weile hin und her, bis das ganze formular da ist)
+7. browser an keycloak POST -> username + passwort
+	cookies: AUTH_SESSION_ID_LEGACY, KC_RESTART
+	session-code in uri, was ist das?
+8. kc an browser: 302 Found
+
+	geh zum gateway und sag ihm den code, state &session state:	http://localhost:8080/login/oauth2/code/keycloak-gateway-client?state=DnqvHM00aYRBq9-Viry-k0gq79MJchZnvc2dg62VkNk%3D&session_state=0f69dc3d-2cc1-4c01-b917-146f3fb3efdf&code=87a3ebba-81a5-49db-bfec-f2ea735c7083.0f69dc3d-2cc1-4c01-b917-146f3fb3efdf.672c0413-eba3-4481-abb5-27f75a71727e
+
+	noch mehr neue cookies setzen
+	KEYCLOAK_IDENTITY=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIxNzVhN2Q3Ny0xZGJiLTRlMTMtODVjYy03YTIzMjBjMmZkYzcifQ.eyJleHAiOjE2ODQwNDg2MzAsImlhdCI6MTY4NDAxMjYzMCwianRpIjoiYzU2ODc5ZTMtZmY5OS00MTQ3LWE2ZmUtMWIwMjczZjBlYjg0IiwiaXNzIjoiaHR0cDovL2hvc3QuZG9ja2VyLmludGVybmFsOjEwMDAxL3JlYWxtcy90ZWFwb3QiLCJzdWIiOiIzMjFlYTVjMS1iZGM0LTRmZGQtYThjZC1kMmQ1Y2Q2ZWJmYTMiLCJ0eXAiOiJTZXJpYWxpemVkLUlEIiwic2Vzc2lvbl9zdGF0ZSI6IjBmNjlkYzNkLTJjYzEtNGMwMS1iOTE3LTE0NmYzZmIzZWZkZiIsInNpZCI6IjBmNjlkYzNkLTJjYzEtNGMwMS1iOTE3LTE0NmYzZmIzZWZkZiIsInN0YXRlX2NoZWNrZXIiOiIxQUkzV1Vyd1FNQkNoay1WdWVCWHNROEJpaDdyOF9vWHFVUExyVFppR1cwIn0.q4f7zOfl41i-KeBtb-vPmTjKEv9whU9hkSE9Afruvn8; Version=1; Path=/realms/teapot/; SameSite=None; Secure; HttpOnly
+	
+	KEYCLOAK_SESSION=teapot/321ea5c1-bdc4-4fdd-a8cd-d2d5cd6ebfa3/0f69dc3d-2cc1-4c01-b917-146f3fb3efdf; Version=1; Expires=Sun, 14-May-2023 07:17:10 GMT; Max-Age=36000; Path=/realms/teapot/; SameSite=None; Secure
+	(enthält das, was später als state und als session state weitergeschickt wird, ist auch teil vom auth code (mitte)
+
+9. browser an gateway: 
+	request URI: /login/oauth2/code/keycloak-gateway-client?state=DnqvHM00aYRBq9-Viry-k0gq79MJchZnvc2dg62VkNk%3D&session_state=0f69dc3d-2cc1-4c01-b917-146f3fb3efdf&code=87a3ebba-81a5-49db-bfec-f2ea735c7083.0f69dc3d-2cc1-4c01-b917-146f3fb3efdf.672c0413-eba3-4481-abb5-27f75a71727e
+	
+	JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD
+	SESSION=678f009e-de7e-4569-b345-f3f83fd31a6a
+
+10. ???gateway an keycloak: 
+	das ist der code, das ist die redirect-uri (gateway) authentication: basic
+	grant type: code
+	Form item: "code" = "87a3ebba-81a5-49db-bfec-f2ea735c7083.0f69dc3d-2cc1-4c01-b917-146f3fb3efdf.672c0413-eba3-4481-abb5-27f75a71727e"
+	
+	nicht ganz sicher, ob das wirklich das gateway ist, weils nicht von 8080 aus geht, sondern 55598 und 192.168.0.168
+	
+11. keycloak an gateway: 200 OK
+	
+	access token:	eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI2Q1h3QzI0NnN0TDVIQXdGYmtONEVRcUphYlhKQjdDd0ctU1dpM2ZvRTlNIn0.eyJleHAiOjE2ODQwMTM4MzEsImlhdCI6MTY4NDAxMjYzMSwiYXV0aF90aW1lIjoxNjg0MDEyNjMwLCJqdGkiOiI3YTc5NDZlYi1iOWI1LTQzMDgtYWNlNi0yOGZiMTAyOGNiNTciLCJpc3MiOiJodHRwOi8vaG9zdC5kb2NrZXIuaW50ZXJuYWw6MTAwMDEvcmVhbG1zL3RlYXBvdCIsInN1YiI6IjMyMWVhNWMxLWJkYzQtNGZkZC1hOGNkLWQyZDVjZDZlYmZhMyIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlYXBvdC1nYXRld2F5Iiwibm9uY2UiOiJ1WkRIc3VKX0FlTVRsMWtNNFVzR0ljSjhsN2kzN3dwZVVlMExGZE9Ma084Iiwic2Vzc2lvbl9zdGF0ZSI6IjBmNjlkYzNkLTJjYzEtNGMwMS1iOTE3LTE0NmYzZmIzZWZkZiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy10ZWFwb3QiXX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiIwZjY5ZGMzZC0yY2MxLTRjMDEtYjkxNy0xNDZmM2ZiM2VmZGYiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJVbGEgUmEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ1bGFsYSIsImdpdmVuX25hbWUiOiJVbGEiLCJmYW1pbHlfbmFtZSI6IlJhIiwiZW1haWwiOiJ1bGFAYmxhLmF0In0.TxYAKNTDsNiFwZkeie7a8e222R_5b7_qDkbbJCETGkPzNLUTt3a4h3JohvSDduJwX3tAOf0J0L_LnU8OjxOz5mFFrJJRp_WfijMZgF-J2ZieTFqCxB-S1knQcji7kyCB0s8oW-sOGx80B4Vql8feJhgi9UJEaLOQz3E3FZAn94WQR-RwM3K9L6NgR3-GiOwIR_BmIXuQIWeMhHwqUuIr8zDUw3fGbC5nLR5nFfSFcUQrX6t--4TFamwvBDwJ2fj9sv6gYSVVKsxy6DBC20ypLjb0JIxn3iehl-hwgY3tYsVX_7IwewhAwHqwWEr16mQKNztZlOlm0UnEtNdvXgsEYw
+	
+	
+	(refresh token)
+	
+	id token: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI2Q1h3QzI0NnN0TDVIQXdGYmtONEVRcUphYlhKQjdDd0ctU1dpM2ZvRTlNIn0.eyJleHAiOjE2ODQwMTM4MzEsImlhdCI6MTY4NDAxMjYzMSwiYXV0aF90aW1lIjoxNjg0MDEyNjMwLCJqdGkiOiIwYzU5ZDE1NS0xOWNhLTQ2OGEtODMxMC04NjM4Zjc1ZmE4ZWMiLCJpc3MiOiJodHRwOi8vaG9zdC5kb2NrZXIuaW50ZXJuYWw6MTAwMDEvcmVhbG1zL3RlYXBvdCIsImF1ZCI6InRlYXBvdC1nYXRld2F5Iiwic3ViIjoiMzIxZWE1YzEtYmRjNC00ZmRkLWE4Y2QtZDJkNWNkNmViZmEzIiwidHlwIjoiSUQiLCJhenAiOiJ0ZWFwb3QtZ2F0ZXdheSIsIm5vbmNlIjoidVpESHN1Sl9BZU1UbDFrTTRVc0dJY0o4bDdpMzd3cGVVZTBMRmRPTGtPOCIsInNlc3Npb25fc3RhdGUiOiIwZjY5ZGMzZC0yY2MxLTRjMDEtYjkxNy0xNDZmM2ZiM2VmZGYiLCJhdF9oYXNoIjoiTjlrb0hYOWViTDQtczhhN0JuNVVVdyIsInNpZCI6IjBmNjlkYzNkLTJjYzEtNGMwMS1iOTE3LTE0NmYzZmIzZWZkZiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IlVsYSBSYSIsInByZWZlcnJlZF91c2VybmFtZSI6InVsYWxhIiwiZ2l2ZW5fbmFtZSI6IlVsYSIsImZhbWlseV9uYW1lIjoiUmEiLCJlbWFpbCI6InVsYUBibGEuYXQifQ.MHxZs8BVNWHNMdrFECfP_tgdjqaaZCviJTr-C48YM1WNwghHQJgVTBD0fKTRNeVaiIYtWbNbLhyxICzOef-rzv_lmPqx4vmjFTMk8UMEI2-15Si11iSE2__uUjBbVOchsuT9unwc2rAp_ECWYWIchX-H4FqklkZUOg4dUcla8VuYJtzpdxgfFgRWIJj22yh34rIH9pmeU4fL0hXpppp3bDxes4PG6HKDw1dR7XO8owTODfU4JS6C_DDyUvpRdDJ3J2JViouzuTLc9Afa9S355_MwaQyu9ePghqveJyerCaKjaZumsrvbrC28LR07-K8nAOlR49Gjk2pqax0hsm2TVQ
+	
+	session state: 0f69dc3d-2cc1-4c01-b917-146f3fb3efdf
+
+11. gateway an keycloak: GET userinfo
+	mit obigem access token als bearer
+	
+12. keycloak an gateway: 200 ok
+	alle möglichen infos über user
+	
+13. gateway an browser: 302 found
+	location: /hellotea/cookie
+	
+	Set-Cookie: SESSION=9496488f-4467-41fa-97a0-cee36b3773bc; Path=/; HttpOnly; SameSite=Lax
+	
+14. browser an gateway: GET /hellotea/cookie
+	JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD
+	SESSION=9496488f-4467-41fa-97a0-cee36b3773bc
+	
+15. gateway 55600 an teas: GET /teas/hello/cookie
+	session cookie vom browser kommt auch mit
+	JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD
+	SESSION=9496488f-4467-41fa-97a0-cee36b3773bc
+	
+	Authorization: Bearer (der selbe, den gateway vorher vom browser erhalten hat) eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI2Q1h3QzI0NnN0TDVIQXdGYmtONEVRcUphYlhKQjdDd0ctU1dpM2ZvRTlNIn0.eyJleHAiOjE2ODQwMTM4MzEsImlhdCI6MTY4NDAxMjYzMSwiYXV0aF90aW1lIjoxNjg0MDEyNjMwLCJqdGkiOiI3YTc5NDZlYi1iOWI1LTQzMDgtYWNlNi0yOGZiMTAyOGNiNTciLCJpc3MiOiJodHRwOi8vaG9zdC5kb2NrZXIuaW50ZXJuYWw6MTAwMDEvcmVhbG1zL3RlYXBvdCIsInN1YiI6IjMyMWVhNWMxLWJkYzQtNGZkZC1hOGNkLWQyZDVjZDZlYmZhMyIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlYXBvdC1nYXRld2F5Iiwibm9uY2UiOiJ1WkRIc3VKX0FlTVRsMWtNNFVzR0ljSjhsN2kzN3dwZVVlMExGZE9Ma084Iiwic2Vzc2lvbl9zdGF0ZSI6IjBmNjlkYzNkLTJjYzEtNGMwMS1iOTE3LTE0NmYzZmIzZWZkZiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy10ZWFwb3QiXX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiIwZjY5ZGMzZC0yY2MxLTRjMDEtYjkxNy0xNDZmM2ZiM2VmZGYiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJVbGEgUmEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ1bGFsYSIsImdpdmVuX25hbWUiOiJVbGEiLCJmYW1pbHlfbmFtZSI6IlJhIiwiZW1haWwiOiJ1bGFAYmxhLmF0In0.TxYAKNTDsNiFwZkeie7a8e222R_5b7_qDkbbJCETGkPzNLUTt3a4h3JohvSDduJwX3tAOf0J0L_LnU8OjxOz5mFFrJJRp_WfijMZgF-J2ZieTFqCxB-S1knQcji7kyCB0s8oW-sOGx80B4Vql8feJhgi9UJEaLOQz3E3FZAn94WQR-RwM3K9L6NgR3-GiOwIR_BmIXuQIWeMhHwqUuIr8zDUw3fGbC5nLR5nFfSFcUQrX6t--4TFamwvBDwJ2fj9sv6gYSVVKsxy6DBC20ypLjb0JIxn3iehl-hwgY3tYsVX_7IwewhAwHqwWEr16mQKNztZlOlm0UnEtNdvXgsEYw
+	
+16. teas (vermutlich) 55601 an keycloak: keys bitte
+17. keycloak an teas: hier die keys (schickt rsa keys)
+
+18. teas 8084 an gateway 55600: 200
+	HelloTea here cookie
+
+19. 8080 an browser 55561: 200
+	HelloTea here cookie
+	
+--
+neue anfrage mit bereits gesetztem cookie:
+
+1. browser 55561 an gateway 8080: GET /hellotea/sendcookie
+	JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD
+	SESSION=9496488f-4467-41fa-97a0-cee36b3773bc
+
+2. gateway 555600 an teas 8084: GET /teas/hello/sendcookie
+	Authorization: Bearer der schon bekannte access token...
+3. teas antwortet mit bestelltem String
+4. gateway schickt bestellten String an browser weiter
+
+	
+
+JSESSIONID=5E360ECFF6076DB9317C8E97EC596748; SESSION=bc95ecf1-d0b5-4962-a708-4afca8f8757e
+
+
+
+JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD; SESSION=2c358545-2a48-4714-a804-a435d726f518
