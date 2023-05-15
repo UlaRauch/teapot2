@@ -1,3 +1,13 @@
+keycloak-server_2:		10001
+mongo_db_2			27017
+gateway_0			8080
+gateway_rs			8180
+gateway_client			8181
+teas_0				8084
+teas_rs				8184
+------------------------------------
+unvollständig:
+
 # gateway and teas as resource server:
 ## teas:
 	- not teas2!
@@ -26,5 +36,3 @@
 				- /milk				routes to ${MILK}/getmilk
 	
 	- realm: teapot
-	
-weiter: docker images builden und pullen für gateway + teas as RS
