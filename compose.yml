@@ -3,7 +3,7 @@ services:
     keycloak-server_2:
         container_name: keycloak-server_2
 # use keycloak 20.0
-        image: quay.io/keycloak/keycloak
+        image: quay.io/keycloak/keycloak:20.0.1
         environment:
             # create initial username and password
 #            KEYCLOAK_USER: admin
@@ -27,7 +27,7 @@ services:
 #            - tea-network
 
     mongo_db_2:
-        image: "mongo"
+        image: mongo
         container_name: mongo_db_2
         restart: always
         ports:
@@ -35,16 +35,16 @@ services:
 #        networks:
 #            - tea-network
             
-    teas_rs:
+    teas_0:
         build: ./teas
-        image: teapot2_teas_rs
-        container_name: teas_rs
+        image: teapot2_teas_0
+        container_name: teas_0
         environment:
             - MONGODB_HOST=mongo_db_2
             - DATABASE_NAME=teas2-db
 #        restart: always
         ports:
-            - 8184:8184
+            - 8084:8084
         depends_on:
             - mongo_db_2
 #        networks:
@@ -59,12 +59,12 @@ services:
 #        networks:
 #            - tea-network
             
-    gateway_rs:
+    gateway_0:
         build: ./gateway2
-        image: teapot2_gateway_rs
-        container_name: gateway_rs
+        image: teapot2_gateway_0
+        container_name: gateway_0
         environment:
-            - TEAS=http://host.docker.internal:8184
+            - TEAS=http://host.docker.internal:8084
             - MILK=http://host.docker.internal:8183
 #            - CLIENT_SECRET=49re8jq7d3WeYRx7BVHwoPSJFRxyhcKp
         # tried: host.docker.internal, keycloak-server, localhost
@@ -73,7 +73,7 @@ services:
 #            - discovery-service_10-3-23
             - keycloak-server_2
         ports:
-            - 8180:8180
+            - 8080:8080
 #        networks:
 #            - tea-network
 #        restart: always
