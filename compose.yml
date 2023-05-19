@@ -22,7 +22,7 @@ services:
             - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm.json
 #            - ./realm-export.json:/tmp/realm-export.json
         ports:
-            - 10001:8080
+            - 10001:10001
 #        networks:
 #            - tea-network
 
@@ -63,7 +63,7 @@ services:
     gateway2_client:
         build: ./gateway2
         image: teapot2_gateway_client
-        container_name: gateway_client
+        container_name: gateway2_client
         environment:
             - TEAS=http://host.docker.internal:8184
             - MILK=http://host.docker.internal:8183
