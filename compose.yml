@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-    keycloak-server_2
+    keycloak-server_2:
         container_name: keycloak-server_2
 # use keycloak 20.0
         image: quay.io/keycloak/keycloak
@@ -42,6 +42,7 @@ services:
         environment:
             - MONGODB_HOST=mongo_db_2
             - DATABASE_NAME=teas2-db
+            - KEYCLOAK=http://host.docker.internal:10001
 #        restart: always
         ports:
             - 8184:8184
