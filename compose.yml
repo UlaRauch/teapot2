@@ -23,8 +23,8 @@ services:
 #            - ./realm-export.json:/tmp/realm-export.json
         ports:
             - 10001:8080
-#        networks:
-#            - tea-network
+        networks:
+            - tea-network
 
     mongo_db_2:
         image: mongo
@@ -32,8 +32,8 @@ services:
         restart: always
         ports:
             - 27017:27017
-#        networks:
-#            - tea-network
+        networks:
+            - tea-network
             
     teas_0:
         build: ./teas
@@ -47,8 +47,8 @@ services:
             - 8084:8084
         depends_on:
             - mongo_db_2
-#        networks:
-#            - tea-network
+        networks:
+            - tea-network
             
 #    milk:
 #        build: ./milk
@@ -68,16 +68,16 @@ services:
             - MILK=http://host.docker.internal:8183
 #            - CLIENT_SECRET=49re8jq7d3WeYRx7BVHwoPSJFRxyhcKp
         # tried: host.docker.internal, keycloak-server, localhost
-            - KEYCLOAK=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
+#            - KEYCLOAK=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
 #        depends_on:
 #            - discovery-service_10-3-23
-            - keycloak-server_2
+#            - keycloak-server_2
         ports:
             - 8080:8080
-#        networks:
-#            - tea-network
+        networks:
+            - tea-network
 #        restart: always
 
-#networks:
-#  tea-network:
-#    driver: bridge
+networks:
+  tea-network:
+    driver: bridge
