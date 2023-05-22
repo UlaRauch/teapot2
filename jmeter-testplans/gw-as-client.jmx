@@ -48,7 +48,7 @@
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
           <collectionProp name="CookieManager.cookies">
             <elementProp name="JSESSIONID" elementType="Cookie" testname="JSESSIONID">
-              <stringProp name="Cookie.value">JSESSIONID=D45FBECB400262D7CD59174FEB01C7DD</stringProp>
+              <stringProp name="Cookie.value">9991ABA58032DCE1091E3C296363DA84</stringProp>
               <stringProp name="Cookie.domain">localhost</stringProp>
               <stringProp name="Cookie.path">/</stringProp>
               <boolProp name="Cookie.secure">false</boolProp>
@@ -57,7 +57,7 @@
               <boolProp name="Cookie.domain_specified">true</boolProp>
             </elementProp>
             <elementProp name="SESSION" elementType="Cookie" testname="SESSION">
-              <stringProp name="Cookie.value">2c358545-2a48-4714-a804-a435d726f518</stringProp>
+              <stringProp name="Cookie.value">e43ba8ca-2e6b-4031-9341-2528e1833e64</stringProp>
               <stringProp name="Cookie.domain">localhost</stringProp>
               <stringProp name="Cookie.path">/</stringProp>
               <boolProp name="Cookie.secure">false</boolProp>
