@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="gateway_cl_helloauth" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="teapot2-gateway_cl-plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
@@ -12,16 +12,16 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Session cookie" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="gateway_cl/helloauth" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${__P(THREADS)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">0</stringProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(RAMP)}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(DURATION)}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
       </ThreadGroup>
@@ -30,8 +30,8 @@
           <collectionProp name="CookieManager.cookies">
             <elementProp name="SESSION" elementType="Cookie" testname="SESSION">
               <stringProp name="Cookie.value">${__P(SESSION)}</stringProp>
-              <stringProp name="Cookie.domain"></stringProp>
-              <stringProp name="Cookie.path"></stringProp>
+              <stringProp name="Cookie.domain">localhost</stringProp>
+              <stringProp name="Cookie.path">/</stringProp>
               <boolProp name="Cookie.secure">false</boolProp>
               <longProp name="Cookie.expires">0</longProp>
               <boolProp name="Cookie.path_specified">true</boolProp>
@@ -62,7 +62,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
-      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="false">
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -77,8 +77,8 @@
             <threadName>true</threadName>
             <dataType>true</dataType>
             <encoding>false</encoding>
-            <assertions>true</assertions>
-            <subresults>true</subresults>
+            <assertions>false</assertions>
+            <subresults>false</subresults>
             <responseData>false</responseData>
             <samplerData>false</samplerData>
             <xml>false</xml>
@@ -93,40 +93,6 @@
             <url>true</url>
             <threadCounts>true</threadCounts>
             <idleTime>true</idleTime>
-            <connectTime>true</connectTime>
-          </value>
-        </objProp>
-        <stringProp name="filename"></stringProp>
-      </ResultCollector>
-      <hashTree/>
-      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="false">
-        <boolProp name="ResultCollector.error_logging">false</boolProp>
-        <objProp>
-          <name>saveConfig</name>
-          <value class="SampleSaveConfiguration">
-            <time>true</time>
-            <latency>true</latency>
-            <timestamp>true</timestamp>
-            <success>true</success>
-            <label>true</label>
-            <code>false</code>
-            <message>false</message>
-            <threadName>true</threadName>
-            <dataType>false</dataType>
-            <encoding>false</encoding>
-            <assertions>false</assertions>
-            <subresults>false</subresults>
-            <responseData>false</responseData>
-            <samplerData>false</samplerData>
-            <xml>false</xml>
-            <fieldNames>true</fieldNames>
-            <responseHeaders>false</responseHeaders>
-            <requestHeaders>false</requestHeaders>
-            <responseDataOnError>false</responseDataOnError>
-            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
-            <assertionsResultsToSave>0</assertionsResultsToSave>
-            <bytes>true</bytes>
-            <sentBytes>true</sentBytes>
             <connectTime>true</connectTime>
           </value>
         </objProp>

@@ -1,0 +1,34 @@
+{
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 65068,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 16.666886949037714,
+    "medianResTime" : 10.0,
+    "minResTime" : 1.0,
+    "maxResTime" : 553.0,
+    "pct1ResTime" : 15.0,
+    "pct2ResTime" : 17.0,
+    "pct3ResTime" : 21.0,
+    "throughput" : 5964.616371803098,
+    "receivedKBytesPerSec" : 1041.0826747123933,
+    "sentKBytesPerSec" : 757.2266878265651
+  },
+  "teas_0/teas/hello/tea" : {
+    "transaction" : "teas_0/teas/hello/tea",
+    "sampleCount" : 65068,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 16.666886949037714,
+    "medianResTime" : 10.0,
+    "minResTime" : 1.0,
+    "maxResTime" : 553.0,
+    "pct1ResTime" : 15.0,
+    "pct2ResTime" : 17.0,
+    "pct3ResTime" : 21.0,
+    "throughput" : 5964.616371803098,
+    "receivedKBytesPerSec" : 1041.0826747123933,
+    "sentKBytesPerSec" : 757.2266878265651
+  }
+}

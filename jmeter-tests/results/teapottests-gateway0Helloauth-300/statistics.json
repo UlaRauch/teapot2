@@ -1,0 +1,34 @@
+{
+  "gateway_0/helloauth" : {
+    "transaction" : "gateway_0/helloauth",
+    "sampleCount" : 7316,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 319.8352925095687,
+    "medianResTime" : 272.0,
+    "minResTime" : 42.0,
+    "maxResTime" : 981.0,
+    "pct1ResTime" : 580.0,
+    "pct2ResTime" : 736.0,
+    "pct3ResTime" : 794.8299999999999,
+    "throughput" : 903.8794168519892,
+    "receivedKBytesPerSec" : 85.6213900728935,
+    "sentKBytesPerSec" : 110.33684287744009
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 7316,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 319.8352925095687,
+    "medianResTime" : 272.0,
+    "minResTime" : 42.0,
+    "maxResTime" : 981.0,
+    "pct1ResTime" : 580.0,
+    "pct2ResTime" : 736.0,
+    "pct3ResTime" : 794.8299999999999,
+    "throughput" : 903.8794168519892,
+    "receivedKBytesPerSec" : 85.6213900728935,
+    "sentKBytesPerSec" : 110.33684287744009
+  }
+}
