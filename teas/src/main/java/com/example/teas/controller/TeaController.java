@@ -5,6 +5,7 @@ import com.example.teas.repository.TeaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -74,5 +75,10 @@ public class TeaController {
         } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong while preparing your tea.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<String> hello() {
+        return new ResponseEntity<>("Hello Admin from Resource Server", HttpStatus.OK);
     }
 }

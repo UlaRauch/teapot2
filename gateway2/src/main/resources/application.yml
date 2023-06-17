@@ -21,6 +21,13 @@ spring:
           filters:
             - SetPath=/teas/getall
 
+        - id: listTeas
+          uri: ${TEAS}
+          predicates:
+            - Path=/delete{teaID}
+          filters:
+            - SetPath=/teas/delete{teaID}
+
         - id: makeTea
           uri: ${TEAS}
           predicates:
@@ -43,7 +50,6 @@ spring:
       client:
         provider:
           keycloak-provider:
-            jwk-set-uri: ${KEYCLOAK}/realms/teapot/protocol/openid-connect/certs
             issuer-uri: ${KEYCLOAK}/realms/teapot
         registration:
           keycloak-gateway-client:
@@ -52,4 +58,4 @@ spring:
             client-id: teapot-gateway
             client-secret: ${CLIENT_SECRET}
             authorization-grant-type: authorization_code
-            redirect-uri: 'http://localhost:8080/login/oauth2/code/{registrationId}'
+            redirect-uri: 'http://localhost:8181/login/oauth2/code/{registrationId}'
