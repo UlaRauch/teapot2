@@ -1,6 +1,6 @@
 #! no special characters here, not even in comments, otherwise build error because of encoding!
 server:
-  port: 8184
+  port: 8185
 
 spring:
   application:

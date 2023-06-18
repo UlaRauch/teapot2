@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 //TODO: crossorigin
 @RestController
@@ -80,5 +82,21 @@ public class TeaController {
     @GetMapping("/admin")
     public ResponseEntity<String> hello() {
         return new ResponseEntity<>("Hello Admin from Resource Server", HttpStatus.OK);
+    }
+
+    @GetMapping("/authorities")
+    public Map<String,Object> getPrincipalInfo(JwtAuthenticationToken principal) {
+
+        Collection<String> authorities = principal.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        Map<String,Object> info = new HashMap<>();
+        info.put("name", principal.getName());
+        info.put("authorities", authorities);
+        info.put("tokenAttributes", principal.getTokenAttributes());
+
+        return info;
     }
 }

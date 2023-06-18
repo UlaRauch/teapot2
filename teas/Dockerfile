@@ -1,5 +1,5 @@
 FROM openjdk:17
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} teas.jar
-EXPOSE 8084
+EXPOSE 8085
 ENTRYPOINT ["java","-jar","/teas.jar"]
