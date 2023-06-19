@@ -20,12 +20,6 @@ spring:
         jwt:
           issuer-uri: ${KEYCLOAK}/realms/teapot
           jwk-set-uri: ${KEYCLOAK}/realms/teapot/protocol/openid-connect/certs
-
-jwt:
-  auth:
-    converter:
-      resource-id: springboot-keycloak-client
-      principal-attribute: preferred_username
 #spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:10001/auth/realms/teapot
 #spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://localhost:10001/auth/realms/teapot/protocol/openid-connect/certs
 #deprecated?
