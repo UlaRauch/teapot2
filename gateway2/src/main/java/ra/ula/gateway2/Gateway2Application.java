@@ -33,4 +33,9 @@ class Gateway2Controller {
     public String hello() {
         return "Hello, it's me!";
     }
+
+    @GetMapping("/goodbye")
+    public String goodbye() {
+        return "Goodbye!";
+    }
 }

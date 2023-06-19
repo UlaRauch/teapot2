@@ -16,7 +16,7 @@ public class Gateway2SecurityConfiguration {
         http.cors()
             .and()
                 .authorizeExchange()
-                .pathMatchers("/hellogateway", "/hellotea/noauth")
+                .pathMatchers("/hellogateway", "/hellotea/noauth", "/goodbye")
                 .permitAll()
             .and()
                 .authorizeExchange()
@@ -31,9 +31,9 @@ public class Gateway2SecurityConfiguration {
     }
 
     @Bean
-    public ServerLogoutSuccessHandler keycloakLogoutSuccessHandler(ReactiveClientRegistrationRepository repository) {
+    public ServerLogoutSuccessHandler logoutSuccessHandler(ReactiveClientRegistrationRepository repository) {
         OidcClientInitiatedServerLogoutSuccessHandler oidcClientInitiatedServerLogoutSuccessHandler = new OidcClientInitiatedServerLogoutSuccessHandler(repository);
-        oidcClientInitiatedServerLogoutSuccessHandler.setPostLogoutRedirectUri("https://orf.at");
+        oidcClientInitiatedServerLogoutSuccessHandler.setPostLogoutRedirectUri("http://localhost:8181/goodbye");
         return oidcClientInitiatedServerLogoutSuccessHandler;
     }
 }
