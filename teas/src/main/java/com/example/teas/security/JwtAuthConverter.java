@@ -16,46 +16,28 @@ import java.util.stream.Stream;
 /*
 taken from ch4mpy
 https://stackoverflow.com/questions/74571191/use-keycloak-spring-adapter-with-spring-boot-3/74572732#74572732
+and simplified, with addition of ROLE_ prefix
  */
 @RequiredArgsConstructor
 class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection<? extends GrantedAuthority>> {
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public Collection<? extends GrantedAuthority> convert(Jwt jwt) {
         return Stream.of("$.realm_access.roles", "$.resource_access.*.roles").flatMap(claimPaths -> {
                     Object claim;
                     try {
                         claim = JsonPath.read(jwt.getClaims(), claimPaths);
                     } catch (PathNotFoundException e) {
-                        claim = null;
-                    }
-                    if (claim == null) {
                         return Stream.empty();
                     }
-                    if (claim instanceof String claimStr) {
-                        return Stream.of(claimStr.split(","));
-                    }
-                    if (claim instanceof String[] claimArr) {
-                        return Stream.of(claimArr);
-                    }
-                    if (Collection.class.isAssignableFrom(claim.getClass())) {
-                        final var iter = ((Collection) claim).iterator();
-                        if (!iter.hasNext()) {
-                            return Stream.empty();
-                        }
-                        final var firstItem = iter.next();
-                        if (firstItem instanceof String) {
-                            return (Stream<String>) ((Collection) claim).stream();
-                        }
-                        if (Collection.class.isAssignableFrom(firstItem.getClass())) {
-                            return (Stream<String>) ((Collection) claim).stream().flatMap(colItem -> ((Collection) colItem).stream()).map(String.class::cast);
-                        }
+                    final var firstItem = ((Collection) claim).iterator().next();
+                    if (Collection.class.isAssignableFrom(firstItem.getClass())) {
+                        return (Stream<String>) ((Collection) claim).stream().flatMap(item -> ((Collection) item).stream()).map(String.class::cast);
                     }
                     return Stream.empty();
                 })
-                /* Insert some transformation here if you want to add a prefix like "ROLE_" or force upper-case authorities */
-                .map(SimpleGrantedAuthority::new)
+                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
                 .map(GrantedAuthority.class::cast).toList();
     }
 }

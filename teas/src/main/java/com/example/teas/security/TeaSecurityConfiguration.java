@@ -15,9 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class TeaSecurityConfiguration {
-    public static final String ADMIN = "tea_admin";
+    public static final String ADMIN = "admin";
     public static final String USER = "user";
-    public static final String PRIVILEGED_USER = "puser";
+    public static final String PRIVILEGED_USER = "p_user";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter) throws Exception {
@@ -25,11 +25,11 @@ public class TeaSecurityConfiguration {
                 .authorizeHttpRequests().requestMatchers("/teas/hello/noauth")
                 .permitAll()
                 .requestMatchers("/teas/admin", "/teas/create", "/teas/delete/**")
-                .hasAuthority(ADMIN)
+                .hasRole(ADMIN)
                 .requestMatchers("/teas/maketea/special")
-                .hasAnyAuthority(PRIVILEGED_USER, ADMIN)
+                .hasAnyRole(PRIVILEGED_USER, ADMIN)
                 .requestMatchers("/teas/getall", "/teas/maketea/*", "/teas/hello/user")
-                .hasAnyAuthority(USER, ADMIN)
+                .hasAnyRole(USER, ADMIN)
             .anyRequest().authenticated();
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

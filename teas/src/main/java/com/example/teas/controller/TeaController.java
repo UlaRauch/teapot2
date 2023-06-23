@@ -43,7 +43,19 @@ public class TeaController {
 
     @PostMapping("/create")
     public ResponseEntity<Tea> createTea(@RequestBody Tea tea) {
-        System.out.println("Got a request to create tea...");
+        System.out.println("Got a request to create tea(POST)");
+        try {
+            Tea _tea = teaRepository.save(new Tea(tea.getId(), tea.getName(), tea.getDescription()));
+            return new ResponseEntity<>(_tea, HttpStatus.CREATED);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/create")
+    public ResponseEntity<Tea> putTea(@RequestBody Tea tea) {
+        System.out.println("Got a request to create tea(PUT)");
         try {
             Tea _tea = teaRepository.save(new Tea(tea.getId(), tea.getName(), tea.getDescription()));
             return new ResponseEntity<>(_tea, HttpStatus.CREATED);
