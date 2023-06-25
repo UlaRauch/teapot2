@@ -32,6 +32,9 @@ class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection<? exte
                         return Stream.empty();
                     }
                     final var firstItem = ((Collection) claim).iterator().next();
+                    if (firstItem instanceof String) {
+                        return (Stream<String>) ((Collection) claim).stream();
+                    }
                     if (Collection.class.isAssignableFrom(firstItem.getClass())) {
                         return (Stream<String>) ((Collection) claim).stream().flatMap(item -> ((Collection) item).stream()).map(String.class::cast);
                     }
