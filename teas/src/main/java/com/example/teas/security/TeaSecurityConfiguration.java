@@ -15,21 +15,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class TeaSecurityConfiguration {
-    public static final String ADMIN = "admin";
-    public static final String USER = "user";
-    public static final String PRIVILEGED_USER = "p_user";
+    public static final String REALM_ADMIN = "tea_admin";
+    public static final String CLIENT_ADMIN = "admin";
+    public static final String REALM_USER = "tea_user";
+    public static final String CLIENT_USER = "user";
+    public static final String CLIENT_PRIVILEGED_USER = "privileged_user";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter) throws Exception {
         http
                 .authorizeHttpRequests().requestMatchers("/teas/hello/noauth")
                 .permitAll()
-                .requestMatchers("/teas/admin", "/teas/create", "/teas/delete/**")
-                .hasRole(ADMIN)
+                .requestMatchers("/teas/admin")
+                .hasRole(REALM_ADMIN)
+                .requestMatchers("/teas/create", "/teas/delete/*")
+                .hasRole(CLIENT_ADMIN)
                 .requestMatchers("/teas/maketea/special")
-                .hasAnyRole(PRIVILEGED_USER, ADMIN)
-                .requestMatchers("/teas/getall", "/teas/maketea/*", "/teas/hello/user")
-                .hasAnyRole(USER, ADMIN)
+                .hasAnyRole(CLIENT_PRIVILEGED_USER, CLIENT_ADMIN)
+                .requestMatchers("/teas/maketea/*", "/teas/hello/user")
+                .hasAnyRole(CLIENT_USER, CLIENT_PRIVILEGED_USER, CLIENT_ADMIN)
+                .requestMatchers("/teas/getall")
+                .hasAnyRole(REALM_USER, REALM_ADMIN, CLIENT_ADMIN)
             .anyRequest().authenticated();
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
