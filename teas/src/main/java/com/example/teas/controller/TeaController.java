@@ -96,7 +96,7 @@ public class TeaController {
         return new ResponseEntity<>("Hello Admin from Resource Server", HttpStatus.OK);
     }
 
-    @GetMapping("/authorities")
+    @GetMapping("/principalinfo")
     public Map<String,Object> getPrincipalInfo(JwtAuthenticationToken principal) {
 
         Collection<String> authorities = principal.getAuthorities()
@@ -105,9 +105,13 @@ public class TeaController {
                 .collect(Collectors.toList());
 
         Map<String,Object> info = new HashMap<>();
-        info.put("name", principal.getName());
-        info.put("authorities", authorities);
         info.put("tokenAttributes", principal.getTokenAttributes());
+        info.put("principal", principal.getPrincipal());
+        info.put("name", principal.getName());
+        info.put("details", principal.getDetails());
+        info.put("authorities", authorities);
+        info.put("credentials", principal.getCredentials());
+        info.put("is authenticated", principal.isAuthenticated());
 
         return info;
     }

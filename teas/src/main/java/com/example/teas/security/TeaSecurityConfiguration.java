@@ -37,9 +37,9 @@ public class TeaSecurityConfiguration {
                 .requestMatchers("/teas/getall")
                 .hasAnyRole(REALM_USER, REALM_ADMIN, CLIENT_ADMIN)
             .anyRequest().authenticated();
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
-        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf().disable();
+        http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable();
         return http.build();
     }
 }
