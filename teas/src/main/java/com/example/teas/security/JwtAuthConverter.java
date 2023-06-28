@@ -52,7 +52,12 @@ class SpringAddonsJwtAuthenticationConverter implements Converter<Jwt, JwtAuthen
     @Override
     public JwtAuthenticationToken convert(Jwt jwt) {
         final var authorities = new JwtGrantedAuthoritiesConverter().convert(jwt);
-        final String username = JsonPath.read(jwt.getClaims(), "preferred_username");
-        return new JwtAuthenticationToken(jwt, authorities, username);
+        final String username;
+        try {
+            username = JsonPath.read(jwt.getClaims(), "preferred_username");
+            return new JwtAuthenticationToken(jwt, authorities, username);
+        } catch (PathNotFoundException e) {
+            return new JwtAuthenticationToken(jwt, authorities);
+        }
     }
 }
