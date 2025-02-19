@@ -18,5 +18,4 @@ public class TeaSecurityConfiguration {
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
         return http.build();
     }
-
 }

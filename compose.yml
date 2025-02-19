@@ -2,25 +2,17 @@ version: "3.8"
 services:
     keycloak-server_2:
         container_name: keycloak-server_2
-# use keycloak 20.0
         image: quay.io/keycloak/keycloak:20.0
         environment:
             # create initial username and password
-#            KEYCLOAK_USER: admin
-#            KEYCLOAK_PASSWORD: admin
             KEYCLOAK_ADMIN: admin
             KEYCLOAK_ADMIN_PASSWORD: admin
             PROXY_ADDRESS_FORWARDING: "true"
-#            KEYCLOAK_FRONTEND_URL: http://host.docker.internal:10001
-#            KEYCLOAK_IMPORT: /tmp/realm-export.json#        volumes:
-#            - ./realm-export.json:/tmp/realm-export.json
-# new import commands einbauen!
         command:
         - start-dev 
         - --import-realm
         volumes:
             - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm.json
-#            - ./realm-export.json:/tmp/realm-export.json
         ports:
             - 10001:8080
         networks:
@@ -67,7 +59,7 @@ services:
         environment:
             - TEAS=http://host.docker.internal:8184
             - MILK=http://host.docker.internal:8183
-            - CLIENT_SECRET=SfA7tBdS9WdkVz3DYGpnM967RAYMKESk
+            - CLIENT_SECRET=4UBWQgAvTOWUh6ZnLC9dRR75WEFuidz4
         # tried: host.docker.internal, keycloak-server, localhost
             - KEYCLOAK=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
 #        depends_on:

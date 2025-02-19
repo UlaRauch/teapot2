@@ -33,7 +33,7 @@ public class Gateway2SecurityConfiguration {
     @Bean
     public ServerLogoutSuccessHandler keycloakLogoutSuccessHandler(ReactiveClientRegistrationRepository repository) {
         OidcClientInitiatedServerLogoutSuccessHandler oidcClientInitiatedServerLogoutSuccessHandler = new OidcClientInitiatedServerLogoutSuccessHandler(repository);
-        oidcClientInitiatedServerLogoutSuccessHandler.setPostLogoutRedirectUri("https://orf.at");
+        oidcClientInitiatedServerLogoutSuccessHandler.setPostLogoutRedirectUri("https://orf.at"); // may be overridden by keycloak configuration
         return oidcClientInitiatedServerLogoutSuccessHandler;
     }
 }

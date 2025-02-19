@@ -18,7 +18,6 @@ public class MilkApplication {
 @RestController
 @RequestMapping("getmilk")
 class MilkServiceController {
-
     @GetMapping
     public String getmilk() {
         return "Here is the milk for your tea.";

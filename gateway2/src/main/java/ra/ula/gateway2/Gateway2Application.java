@@ -28,9 +28,4 @@ class Gateway2Controller {
     public ResponseEntity<String> helloAauth() {
         return new ResponseEntity<>("You are authorized", HttpStatus.OK);
     }
-
-    @GetMapping
-    public String hello() {
-        return "Hello, it's me!";
-    }
 }
