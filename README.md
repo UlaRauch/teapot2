@@ -1,5 +1,34 @@
-# WFP2
+# Teapot
 Teapot Gateway + Teas Service mit OAuth2 und Keycloak
+
+Originally from Bachelor Thesis Project
+
+## TODO:
+- rm docker
+- limit amout of tea:
+  - new property for tea model: amountInStock Integer
+  - rename "make tea" to "pour tea"
+  - each request to pour tea will
+    - check the amount
+    - if no tea available: give back hot water
+    - else:
+      - pour tea
+      - reduce the amount in stock
+      - if only one portion left:
+        - add amount info to pour tea response (nice to have)
+
+  - add refill Stock method
+    - params: tea id, amount
+    - 
+- bring back discovery Service
+- separate read from write tea
+
+## run in intellij without docker (except keycloak and mongodb)
+- set environment variables in run configuration
+- replace host.docker.internal or container names with localhost
+- TODO: find where iss-uri is still overriden to be host.docker.internal,
+so the iss-uri will match the actual uri (localhost) - unti then, spring security can be tested only to the point wether or not a request will be accepted or referred to login with keycloak, but tocken check will fail - or find fix for "cookie not found"
+
 
 ## start mit docker-compose
 intellij mit docker plugin
@@ -31,6 +60,8 @@ mit user credentials über gateway anmelden, indem einer der geschützten gatewa
 
 ## frontend
 derzeit kein container
+! nicht in dieser kombination getestet, frontend braucht evt. anpassungen
+
 
 - frontend-test ist registrierter client
 

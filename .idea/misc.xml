@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/teas/pom.xml" />
         <option value="$PROJECT_DIR$/teas2/pom.xml" />
         <option value="$PROJECT_DIR$/gateway2/pom.xml" />
+        <option value="$PROJECT_DIR$/discovery-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

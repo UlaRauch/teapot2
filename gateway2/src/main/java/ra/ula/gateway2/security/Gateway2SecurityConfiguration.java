@@ -11,12 +11,19 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 
 @Configuration
 public class Gateway2SecurityConfiguration {
+    private static final String[] AUTH_WHITELIST = {
+            "/hellogateway",
+            "/hellotea/noauth",
+            "/listteas",
+            "/maketea/**"
+    };
+
     @Bean
     public SecurityWebFilterChain springSecurityWebFilterChain(ServerHttpSecurity http, ServerLogoutSuccessHandler handler) {
         http.cors()
             .and()
                 .authorizeExchange()
-                .pathMatchers("/hellogateway", "/hellotea/noauth")
+                .pathMatchers(AUTH_WHITELIST)
                 .permitAll()
             .and()
                 .authorizeExchange()

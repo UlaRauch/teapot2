@@ -9,19 +9,22 @@
         <module name="milk" />
         <module name="gateway2" />
         <module name="teas (1)" />
+        <module name="teas" />
+        <module name="discovery-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="gateway2_client" target="17" />
-      <module name="teas" target="17" />
       <module name="teas (2)" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="discovery-service" options="-parameters" />
       <module name="gateway2" options="-parameters" />
       <module name="gateway2_client" options="-parameters" />
       <module name="milk" options="-parameters" />
+      <module name="teas" options="-parameters" />
       <module name="teas (1)" options="-parameters" />
       <module name="teas (2)" options="-parameters" />
     </option>

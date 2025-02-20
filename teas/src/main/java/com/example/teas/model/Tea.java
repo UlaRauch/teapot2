@@ -11,6 +11,7 @@ public class Tea {
     private String id;
     private String name;
     private String description;
+    private String amountInStock;
 
     public Tea (String id, String name, String description) {
         this.id = id;
