@@ -10,8 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class TeaSecurityConfiguration {
     private static final String[] AUTH_WHITELIST = {
             "/teas/hello/noauth",
-            "/teas/create",
-            "/**" // TODO: rm!
+            "/teas/create"
     };
 
     @Bean

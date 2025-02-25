@@ -1,3 +1,6 @@
+# environment variables are set in the run configuration
+# when using the discovery service, route uri for other services like tea, is lb:<service_name> using the name under which the service is registered at the discovery service
+
 server:
   port: 8181
 
@@ -32,13 +35,6 @@ spring:
             - Path=/maketea/{teaID}
           filters:
             - SetPath=/teas/maketea/{teaID}
-
-#        - id: milk
-#          uri: ${MILK}
-#          predicates:
-#            - Path=/milk
-#          filters:
-#            - SetPath=/getmilk
 
       default-filters:
         - TokenRelay=

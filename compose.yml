@@ -43,15 +43,6 @@ services:
         networks:
             - tea-network
             
-#    milk:
-#        build: ./milk
-#        container_name: milk
-#        image: teapot2_milk
-#        ports:
-#            - 8183:8183
-#        networks:
-#            - tea-network
-            
     gateway2_client:
         build: ./gateway2
         image: teapot2_gateway_client
@@ -60,10 +51,7 @@ services:
             - TEAS=http://host.docker.internal:8184
             - MILK=http://host.docker.internal:8183
             - CLIENT_SECRET=4UBWQgAvTOWUh6ZnLC9dRR75WEFuidz4
-        # tried: host.docker.internal, keycloak-server, localhost
             - KEYCLOAK=http://host.docker.internal:10001 # see also #https://github.com/akramEsprit/spring-microservices/blob/master/docker-compose.yml
-#        depends_on:
-#            - discovery-service_10-3-23
             - keycloak-server_2
         ports:
             - 8181:8181
